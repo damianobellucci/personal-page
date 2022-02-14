@@ -11,7 +11,7 @@ function TextBox(props) {
 
 function List(props) {
     const list = props.elements.map(el =>
-        <li>{el}</li>
+        <li id={el.id} onClick={props.showContent}>{el.name}</li>
     )
     return (
         <ul>{list}</ul>
@@ -19,8 +19,8 @@ function List(props) {
 }
 
 
-var list_contacts = ['email', 'telegram', 'linkedin', 'github']
-var list_life = ['curriculum', 'projects', 'passions']
+var list_contacts = [{ "id": 1, "name": 'email', "content": "ciaooo" }, { "id": 2, "name": 'telegram', "content": "aaaaaaaa" }]
+var list_life = [{ "id": 1, "name": 'curriculum', "content": "contenuto del curriculum" }, { "id": 2, "name": 'projects', "content": "contentuo progetti" }]
 
 
 
@@ -31,7 +31,7 @@ class BoxList extends React.Component {
     }
 
     handleChange(e) {
-        this.props.changeBox();
+        this.props.changeBox(e.target.id);
     }
 
     render() {
@@ -39,16 +39,18 @@ class BoxList extends React.Component {
             <div>
                 <TextBox text={this.props.text} />
                 <List elements={this.props.list}
-                    pressed={this.handleChange}
+                    showContent={this.handleChange}
                 />
             </div>
         )
     }
 }
 
-function Box() {
+
+
+function Box(props) {
     return (
-        <p>Info about what's clicked</p>
+        <p>{list_life[props.category - 1].content}</p>
     )
 }
 
@@ -56,11 +58,11 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
-        this.state = { isClicked: false };
+        this.state = { isClicked: 1 };
     }
 
-    handleClick() {
-        this.setState({ isClicked: !this.state.isClicked });
+    handleClick(category) {
+        this.setState({ isClicked: category });
     }
 
     render() {
@@ -68,13 +70,11 @@ class App extends React.Component {
 
         return (
             <div>
-
                 <TextBox text={data.presentation} />
                 <BoxList text="contact me" list={list_contacts} />
                 <BoxList text="Know about me" list={list_life} changeBox={this.handleClick} />
-                <button onClick={this.handleClick}>Click</button>
                 <br />
-                {isClicked ? <Box /> : null}
+                <Box category={isClicked} />
             </div>
         );
     }
